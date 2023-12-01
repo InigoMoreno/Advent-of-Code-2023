@@ -1,0 +1,18 @@
+= Advent-of-Code-2023
+
+Code for <https://adventofcode.com/2023>
+
+== Requirements
+
+To use new_day.sh, download the https://github.com/GreenLightning/advent-of-code-downloader/releases[advent-of-code-downloader].
+
+== Benchmark
+
+Benchmark with https://github.com/sharkdp/hyperfine[hyperfine]:
+
+[source,bash]
+----
+    hyperfine ./src/day* -N --export-asciidoc hyperfine.adoc
+----
+
+include::hyperfine.adoc[]
