@@ -14,4 +14,4 @@ class Day0(Day):
 
 
 if __name__ == '__main__':
-    Day0().main(example=False)
+    Day0().main(example=True)
