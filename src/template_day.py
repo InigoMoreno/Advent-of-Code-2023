@@ -6,6 +6,9 @@ class Day0(Day):
     def __init__(self):
         super().__init__("0")
 
+    def parse(self, input):
+        self.input = input
+
     def part1(self):
         return self.input
 
