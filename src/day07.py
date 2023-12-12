@@ -53,7 +53,6 @@ class Hand:
 class Day07(Day):
     def __init__(self):
         super().__init__("07")
-        self.card_order = ['A', 'K', 'Q', 'J', 'T', '9', '8', '7', '6', '5', '4', '3', '2'][::-1]
 
     def parse(self, input):
         hands = [line.split() for line in input.splitlines()]
