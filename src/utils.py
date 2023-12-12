@@ -7,11 +7,18 @@ class Day():
     def __init__(self, day):
         self.day = day
 
+    def parse(self, input):
+        self.input = input
+
     def part1(self):
         raise NotImplementedError
 
     def part2(self):
         raise NotImplementedError
+
+    def log(self, *args, **kwargs):
+        if self.example:
+            print(*args, **kwargs)
 
     def main(self, example=False):
         parser = argparse.ArgumentParser()
@@ -20,22 +27,23 @@ class Day():
         parser.add_argument('--profile', '-p', action='store_true')
         args = parser.parse_args()
 
+        self.example = example
         if args.example:
-            example = True
+            self.example = True
         if args.real:
-            example = False
+            self.example = False
 
-        file = f'input/day{self.day}/example.txt' if example else f'input/day{self.day}/input.txt'
+        file = f'input/day{self.day}/example.txt' if self.example else f'input/day{self.day}/input.txt'
         with open(file) as f:
-            self.input = f.read().strip()
+            self.parse(f.read().strip())
 
         if args.profile:
             cProfile.runctx('self.part1()', globals(), locals(), sort='tottime')
         print(f'Part 1: {self.part1()}')
 
-        if example and os.path.exists(f'input/day{self.day}/example2.txt'):
+        if self.example and os.path.exists(f'input/day{self.day}/example2.txt'):
             with open(f'input/day{self.day}/example2.txt') as f:
-                self.input = f.read().strip()
+                self.parse(f.read().strip())
 
         if args.profile:
             cProfile.runctx('self.part2()', globals(), locals(), sort='tottime')
