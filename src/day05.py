@@ -1,10 +1,7 @@
 #!/bin/env python3
-from torch import seed
 from utils import Day
 
 import numpy as np
-from tqdm import tqdm
-import itertools
 
 
 class Day05(Day):

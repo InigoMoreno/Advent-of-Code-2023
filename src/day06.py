@@ -1,5 +1,4 @@
 #!/bin/env python3
-from turtle import distance
 from utils import Day
 
 import math
