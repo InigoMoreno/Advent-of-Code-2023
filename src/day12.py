@@ -36,15 +36,7 @@ class Day12(Day):
         return sum(count_valid(*row) for row in self.rows)
 
     def part2(self):
-        res = 0
-        for a, b in self.rows:
-            new_a = tuple('?'.join([''.join(a)] * 5))
-            self.log(new_a, b * 5)
-            valid = count_valid(new_a, b * 5)
-            self.log(valid)
-            res += valid
-            # break
-        return res
+        return sum(count_valid(tuple('?'.join([''.join(a)] * 5)), b * 5) for a, b in self.rows)
 
 
 if __name__ == '__main__':
