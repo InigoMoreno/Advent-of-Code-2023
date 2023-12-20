@@ -85,34 +85,53 @@ class Day18(Day):
             visited.append(pos)
 
         area = 0
+        perimeter = 0
         pos = (0, 0)
+        prev_direction = None
+        prev_length = None
         for line in self.input.splitlines():
             direction, length = parser(line)
             pos = (pos[0] + dirs[direction][0] * length, pos[1] + dirs[direction][1] * length)
+            perimeter += length
 
             if direction == 'R':
-                area_under = (max_pos[0] - pos[0]) * (length-1)
-                self.log(f"R: {max_pos[0] - pos[0]}*{length-1} {area_under}")
+                if prev_direction == 'D':
+                    area_under = - 1
+                    self.log(f"DR: {area_under}")
+                    area += area_under
+                height = max_pos[0] - pos[0]
+                width = length
+                area_under = height * width
+                self.log(f"R: {height}*{width} {area_under}")
                 area += area_under
             if direction == 'L':
-                area_under = (max_pos[0] - pos[0]+1) * (length-1)
-                self.log(f"L: {max_pos[0] - pos[0]+1}*{length-1} {area_under}")
-                area -= area_under
+                height = max_pos[0] - pos[0] + 1
+                width = length
+                area_under = -height * width
+                self.log(f"L: {height}*{width} {area_under}")
+                area += area_under
+            if direction == 'D':
+                if prev_direction == 'L':
+                    area_under = - 1
+                    self.log(f"LD: {area_under}")
+                    area += area_under
+                area_under = -(length - 1)
+                self.log(f"D: {area_under}")
+                area += area_under
 
-        return area
+            prev_direction = direction
+            prev_length = length
+        self.log(f"Perimeter: {perimeter}")
+        self.log(f"Area: {area}")
+        return area + perimeter
 
     def part1(self):
         self.log(self.part0_fast(self.parser1))
         return self.part0_slow(self.parser1)
 
     def part2(self):
-        return 0
-        print("Part 2")
-        print()
-        if self.example:
-            return self.part0_slow(self.parser1)
         return self.part0_fast(self.parser2)
 
 
 if __name__ == '__main__':
-    Day18().main(example=True)
+    Day18().main(example=False)

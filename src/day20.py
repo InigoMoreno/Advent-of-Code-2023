@@ -56,11 +56,12 @@ class Day20(Day):
 
     def initialize(self):
         self.flip_flop_states = {
-            name: False for name in self.outputs.keys() if self.types[name] == ModuleTypes.FlipFlop
+            name: False
+            for name, t in self.types.items() if t == ModuleTypes.FlipFlop
         }
         self.conjunction_memories = {
             name: {other: 0 for other in self.inputs[name]}
-            for name in self.outputs.keys() if self.types[name] == ModuleTypes.Conjunction
+            for name, t in self.types.items() if t == ModuleTypes.Conjunction
         }
 
     def process_signal(self, q, from_name, name, value):
