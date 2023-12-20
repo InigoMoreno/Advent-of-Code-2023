@@ -63,19 +63,23 @@ class Day20(Day):
             for name in self.outputs.keys() if self.types[name] == ModuleTypes.Conjunction
         }
 
-    def process_signal(self, q, in_name, out_name, value):
-        if self.types[out_name] == ModuleTypes.Broadcaster:
-            for output in self.outputs[out_name]:
-                q.put((out_name, output, value))
-        if self.types[out_name] == ModuleTypes.FlipFlop and value == 0:
-            self.flip_flop_states[out_name] = not self.flip_flop_states[out_name]
-            for output in self.outputs[out_name]:
-                q.put((out_name, output, int(self.flip_flop_states[out_name])))
-        if self.types[out_name] == ModuleTypes.Conjunction:
-            self.conjunction_memories[out_name][in_name] = value
-            all_on = int(not all(self.conjunction_memories[out_name].values()))
-            for output in self.outputs[out_name]:
-                q.put((out_name, output, all_on))
+    def process_signal(self, q, from_name, name, value):
+        output = None
+        match self.types[name], value:
+            case ModuleTypes.Broadcaster, _:
+                output = value
+
+            case ModuleTypes.FlipFlop, 0:
+                self.flip_flop_states[name] = not self.flip_flop_states[name]
+                output = int(self.flip_flop_states[name])
+
+            case ModuleTypes.Conjunction, _:
+                self.conjunction_memories[name][from_name] = value
+                output = int(not all(self.conjunction_memories[name].values()))
+
+        if output is not None:
+            for to_name in self.outputs[name]:
+                q.put((name, to_name, output))
 
     def part2(self):
         self.initialize()
