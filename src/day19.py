@@ -19,6 +19,9 @@ class PartRange:
     a: range
     s: range
 
+    def with_attr(self, attr, value):
+        return PartRange(*[getattr(self, a) if a != attr else value for a in self.__dataclass_fields__.keys()])
+
 
 class Day19(Day):
     def __init__(self):
@@ -33,7 +36,7 @@ class Day19(Day):
         for rule in self.workflows[workflow_key]:
             if len(rule) == 1:
                 return self.evaluate_part(part, rule[0])
-            if eval(rule[0], {"x": part.x, "m": part.m, "a": part.a, "s": part.s}):
+            if eval(rule[0], dataclasses.asdict(part)):
                 return self.evaluate_part(part, rule[1])
 
     def evaluate_part_range_inner(self, part_range: PartRange, workflow: list[tuple[str]]):
@@ -57,20 +60,16 @@ class Day19(Day):
             elif varrange.stop < compval:
                 successful = part_range
             else:
-                successful = PartRange(*[range(varrange.start, compval) if v ==
-                                         var else getattr(part_range, v) for v in "xmas"])
-                failing = PartRange(*[range(compval, varrange.stop) if v ==
-                                    var else getattr(part_range, v) for v in "xmas"])
+                successful = part_range.with_attr(var, range(varrange.start, compval))
+                failing = part_range.with_attr(var, range(compval, varrange.stop))
         elif compchar == ">":
             if varrange.stop <= compval:
                 failing = part_range
             elif varrange.start > compval:
                 successful = part_range
             else:
-                successful = PartRange(*[range(compval + 1, varrange.stop) if v ==
-                                         var else getattr(part_range, v) for v in "xmas"])
-                failing = PartRange(*[range(varrange.start, compval + 1) if v ==
-                                    var else getattr(part_range, v) for v in "xmas"])
+                successful = part_range.with_attr(var, range(compval + 1, varrange.stop))
+                failing = part_range.with_attr(var, range(varrange.start, compval + 1))
 
         res = 0
         if successful:
