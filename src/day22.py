@@ -4,6 +4,7 @@ from utils import Day, formatter
 import numpy as np
 
 from collections import defaultdict
+import copy
 
 
 np.set_string_function(formatter, repr=False)
@@ -26,18 +27,18 @@ class Day22(Day):
         self.block_ends = np.array([end for start, end in self.blocks])
 
     def part1(self):
-        suported_by = defaultdict(set)
+        self.suported_by = defaultdict(set)
         W, D, H = np.max(self.block_ends, axis=0)
-        space = np.full((W + 1, D + 1, H + 1), dtype='U1', fill_value='.')
-        space[:, :, 0] = '-'
+        space = np.full((W + 1, D + 1, H + 1), dtype=int, fill_value=0)
+        space[:, :, 0] = -1
         order = np.argsort(self.block_starts[:, 2])
         for i in order:
             start, end = self.blocks[i]
-            name = chr(i + ord('A'))
+            name = i + 1
             while True:
                 below = space[start[0]:end[0] + 1, start[1]:end[1] + 1, start[2] - 1]
-                if ~np.all(below == '.'):
-                    suported_by[name] |= set(below[below != '.'])
+                if ~np.all(below == 0):
+                    self.suported_by[name] |= set(below[below != 0])
                     break
                 start = (start[0], start[1], start[2] - 1)
                 end = (end[0], end[1], end[2] - 1)
@@ -45,15 +46,31 @@ class Day22(Day):
 
             space[start[0]:end[0] + 1, start[1]:end[1] + 1, start[2]:end[2] + 1] = name
         self.log(np.swapaxes(space[:, :, ::-1], 1, 2))
+        self.log(self.suported_by)
 
         indispensable = set()
-        for name, supported_by in suported_by.items():
+        for name, supported_by in self.suported_by.items():
             if len(supported_by) == 1:
                 indispensable.add(list(supported_by)[0])
-        return len(self.blocks)-len(indispensable)+1
+        return len(self.blocks) - len(indispensable) + 1
 
     def part2(self):
-        return None
+        res = 0
+        for i in range(len(self.blocks)):
+            name = i + 1
+            falling = set()
+            falling.add(name)
+            changed = True
+            while changed:
+                changed = False
+                for name, supported_by in self.suported_by.items():
+                    if name in falling:
+                        continue
+                    if len(supported_by - falling) == 0:
+                        falling.add(name)
+                        changed = True
+            res += len(falling) - 1
+        return res
 
 
 if __name__ == '__main__':
