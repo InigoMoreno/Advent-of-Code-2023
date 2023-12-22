@@ -52,7 +52,7 @@ class Day21(Day):
         repeating = max(W, H)
         modulo = desired % repeating
 
-        N = 6
+        N = 5 if self.example else 3
         biggrid = np.tile(self.grid, (N * 2 + 1, N * 2 + 1))
         bigstart = (self.start[0] + W * N, self.start[1] + H * N)
 
@@ -72,7 +72,7 @@ class Day21(Day):
                 for j in range(N * 2 + 1):
                     subreachable = reachable[i * W:(i + 1) * W, j * H:(j + 1) * H]
                     subcounts[i, j] = np.sum(subreachable)
-            # self.log(subcounts)
+            self.log(subcounts)
 
         idx = np.array(list(range(len(counts))))[modulo::repeating]
         counts = counts[modulo::repeating]
@@ -84,25 +84,17 @@ class Day21(Day):
         self.log(f"{dcounts=}")
         self.log(f"{ddcounts=}")
 
-        x0 = counts[-1]
-        v0 = dcounts[-1]
-        a = ddcounts[-1]
-        self.log(f"{x0=} {v0=} {a=}")
-        t = 1
-
-        x = x0 + v0 * t + a * t * t // 2
-        self.log(f"{x=}")
-
         x = counts[-1]
         v = dcounts[-1]
         a = ddcounts[-1]
-        i = idx[-1]
-        while idx[-1] < desired:
-            v += a
-            x += v
-            idx += repeating
+        t = (desired - idx[-1]) // (repeating)
 
-        return x
+        return predict(x, v, a, t)
+
+
+def predict(x0, v0, a, t):
+    x = x0 + v0 * t + a * t * (t + 1) // 2
+    return x
 
 
 if __name__ == '__main__':
