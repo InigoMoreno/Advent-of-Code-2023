@@ -1,16 +1,8 @@
 #!/bin/env python3
-from utils import Day
+from utils import Day, formatter
 import numpy as np
 from queue import PriorityQueue
 from collections import defaultdict
-
-
-def formatter(array):
-    if array.dtype == np.dtype('U1'):
-        return np.array2string(array, separator='', formatter={'all': lambda x: x})
-    if array.dtype == np.dtype('bool'):
-        return np.array2string(array, separator='', formatter={'bool': lambda x: '#' if x else '.'})
-    return np.array2string(array)
 
 
 np.set_string_function(formatter, repr=False)

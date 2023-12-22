@@ -1,5 +1,5 @@
 #!/bin/env python3
-from utils import Day
+from utils import Day, formatter
 
 import numpy as np
 
@@ -9,8 +9,8 @@ def grid_repr(grid):
     return '#' if grid else '.'
 
 
-# np.set_string_function(grid_repr)
-np.set_printoptions(formatter={'bool': grid_repr})
+np.set_string_function(formatter, repr=False)
+np.set_string_function(formatter, repr=True)
 
 
 interesting_pairs = [

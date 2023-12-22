@@ -1,6 +1,7 @@
 import argparse
 import cProfile
 import os
+import numpy as np
 
 
 class Day():
@@ -48,3 +49,11 @@ class Day():
         if args.profile:
             cProfile.runctx('self.part2()', globals(), locals(), sort='tottime')
         print(f'Part 2: {self.part2()}')
+
+
+def formatter(array):
+    if array.dtype == np.dtype('U1'):
+        return np.array2string(array, separator='', formatter={'all': lambda x: x})
+    if array.dtype == np.dtype('bool'):
+        return np.array2string(array, separator='', formatter={'bool': lambda x: '#' if x else '.'})
+    return np.array2string(array)
