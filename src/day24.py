@@ -23,7 +23,6 @@ class Hailstone:
         return f"{self.px}, {self.py}, {self.pz} @ {self.vx}, {self.vy}, {self.vz}"
 
 
-
 class Day24(Day):
     def __init__(self):
         super().__init__("24")
@@ -76,40 +75,23 @@ class Day24(Day):
         # hi.py + hi.vy * ti = py + vy * ti
         # hi.pz + hi.vz * ti = pz + vz * ti
 
-        # rearranged:
-        # px + vx*ti -hi.vx*ti = hi.px
-        # py + vy*ti -hi.vy*ti = hi.py
-        # pz + vz*ti -hi.vz*ti = hi.pz
-
         # if we have n hailstones
         # we have n*3 equations
         # and 6+n unknowns (px, py, pz, vx, vy, vz, t1, t2, ..., tn)
         # So we should be able to solve it with only 3 hailstones
         # It is non-linear because v* and ti are multiplied together
 
-        # h1.px + h1.vx * t1 = px + vx * t1
-        # h2.px + h2.vx * t2 = px + vx * t2
-        # h1.py + h1.vy * t1 = py + vy * t1
-        # h2.py + h2.vy * t2 = py + vy * t2
-        # h1.pz + h1.vz * t1 = pz + vz * t1
-        # h2.pz + h2.vz * t2 = pz + vz * t2
-
         equations = []
 
-        h1, h2, h3 = self.hailstones[:3]
+        vars = sympy.var('px py pz vx vy vz t1 t2 t3')
+        px, py, pz, vx, vy, vz, *ts = vars
 
-        px, py, pz, vx, vy, vz, t1, t2, t3 = sympy.var('px py pz vx vy vz t1 t2 t3')
-        equations.append(h1.px + h1.vx * t1 - px - vx * t1)
-        equations.append(h2.px + h2.vx * t2 - px - vx * t2)
-        equations.append(h3.px + h3.vx * t3 - px - vx * t3)
-        equations.append(h1.py + h1.vy * t1 - py - vy * t1)
-        equations.append(h2.py + h2.vy * t2 - py - vy * t2)
-        equations.append(h3.py + h3.vy * t3 - py - vy * t3)
-        equations.append(h1.pz + h1.vz * t1 - pz - vz * t1)
-        equations.append(h2.pz + h2.vz * t2 - pz - vz * t2)
-        equations.append(h3.pz + h3.vz * t3 - pz - vz * t3)
+        for hi, ti in zip(self.hailstones[:3], ts):
+            equations.append(hi.px + hi.vx * ti - px - vx * ti)
+            equations.append(hi.py + hi.vy * ti - py - vy * ti)
+            equations.append(hi.pz + hi.vz * ti - pz - vz * ti)
 
-        solution = sympy.solve(equations, [px, py, pz, vx, vy, vz, t1, t2, t3])[0]
+        solution = sympy.solve(equations, vars)[0]
 
         return sum(solution[:3])
 
