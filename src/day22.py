@@ -69,6 +69,7 @@ class Day22(Day):
                     if len(supported_by - falling) == 0:
                         falling.add(name)
                         changed = True
+            self.log(i+1, falling - {i+1})
             res += len(falling) - 1
         return res
 
