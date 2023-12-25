@@ -1,12 +1,9 @@
 #!/bin/env python3
 from utils import Day
 
-from collections import defaultdict
-from queue import Queue
-
 import networkx as nx
 import matplotlib.pyplot as plt
-import time
+import heapq
 
 
 class Day25(Day):
@@ -33,11 +30,10 @@ class Day25(Day):
         self.show()
 
         betweenness = nx.edge_betweenness_centrality(self.G)
-        ranking = sorted(self.G.edges, key=betweenness.__getitem__, reverse=True)
 
         self.show(edge_color=[betweenness[edge] for edge in self.G.edges()])
 
-        self.G.remove_edges_from(ranking[:3])
+        self.G.remove_edges_from(heapq.nlargest(3, self.G.edges, key=betweenness.__getitem__))
 
         self.show()
 
