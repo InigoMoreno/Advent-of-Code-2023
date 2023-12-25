@@ -83,18 +83,22 @@ class Day24(Day):
 
         equations = []
 
-        vars = sympy.var('px py pz vx vy vz t1 t2 t3')
-        px, py, pz, vx, vy, vz, *ts = vars
+        vars = sympy.var('px py pz vx vy vz')
+        px, py, pz, vx, vy, vz = vars
 
-        for hi, ti in zip(self.hailstones[:3], ts):
+        for i, hi in enumerate(self.hailstones[:3]):
+            ti = sympy.var(f't{i}')
+            vars += (ti,)
             equations.append(hi.px + hi.vx * ti - px - vx * ti)
             equations.append(hi.py + hi.vy * ti - py - vy * ti)
             equations.append(hi.pz + hi.vz * ti - pz - vz * ti)
 
         solution = sympy.solve(equations, vars)[0]
 
+        self.log(solution)
+
         return sum(solution[:3])
 
 
 if __name__ == '__main__':
-    Day24().main(example=False)
+    Day24().main(example=True)
